@@ -1,54 +1,25 @@
 import sqlite3
 import pandas as pd
 
-# Path to the gaming dataset
-DATABASE_PATH = './gamesDataset/steam_games.csv'
-DATABASE = 'games.db'
+df = pd.read_csv("books_cleaned.csv")
 
-# connect to sqlite
-try:
-    conn = sqlite3.connect(DATABASE)
-    cursor = conn.cursor()
+conn = sqlite3.connect("books.db")
+cursor = conn.cursor()
 
-    print("Database connected.")
-
-except sqlite3.DatabaseError:
-    print("Database not connected")
-
-# Load the database using pandas
-df = pd.read_csv(DATABASE_PATH)
-
-# Inspect and check the dataset
-print(df.head())
-
-# create the table if it doesn't exist
-
-try:
-    cursor.execute(''' 
-    CREATE TABLE IF NOT EXISTS games (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
+cursor.execute('''
+    CREATE TABLE IF NOT EXISTS books (
+        bookID INTEGER PRIMARY KEY,
         title TEXT NOT NULL,
-        genre TEXT,
-        platform TEXT,
-        release_year INTEGER
+        authors TEXT NOT NULL,
+        average_rating REAL NOT NULL,
+        isbn TEXT NOT NULL,
+        num_pages INTEGER NOT NULL,
+        publication_date TEXT NOT NULL,
+        publisher TEXT NOT NULL
     )
 ''')
-    
-    print("Table created!")
 
-except sqlite3.SQLITE_CREATE_TABLE:
-    print("Table already exists continuing!")
+df.to_sql('books', conn, if_exists='replace', index=False)
 
-
-try:
-    for _, row in df.iterrows():
-        
-        tittle = row['name']
-        genre = row['genres']
-        platform = row['platforms']
-        releaseDate = row['release_date']
-
-        cursor.execute(''' 
-            INSERT INTO games (title, genre, platform, release_year)
-            VALUES (?, ?, ?, ?)
-         ''', (tittle, genre, platform, releaseDate))
+conn.commit()
+conn.close()
