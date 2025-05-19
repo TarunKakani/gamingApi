@@ -49,3 +49,5 @@ Currently, this returns all books where the query number exists anywhere in the 
 - Improve search logic for exact matches.
 - Add comprehensive error handling and validation.
 - Expand API documentation.
+- Host the API on a cloud platform (e.g., Heroku, Render).
+- Publish the API to RapidAPI.
